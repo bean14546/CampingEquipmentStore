@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+
     public function register(Request $request){
         $validate = $request->validate([
             'firstName' => 'required|string|max:100',
@@ -15,7 +16,7 @@ class AuthController extends Controller
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|confirmed|min:6',
             'phoneNumber' => 'required|string',
-            'gender' => 'required|string'
+            'gender' => 'required|string',
         ]);
 
         $user = User::create([
@@ -24,13 +25,13 @@ class AuthController extends Controller
             'email' => $validate['email'],
             'password' => bcrypt($validate['password']),
             'phoneNumber' => $validate['phoneNumber'],
-            'gender' => $validate['gender']
+            'gender' => $validate['gender'],
         ]);
 
         $token = $user->createToken('myDevice')->plainTextToken;
         $respone = [
             'user' => $user,
-            'token' => $token
+            'token' => $token,
         ];
 
         return response($respone);
@@ -42,26 +43,37 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
-        // ตรวจสอบ User ที่  login เข้ามาว่ามี user นี้หรือไม่
+        // ตรวจสอบ User ที่  login เข้ามาว่ามี user นี้ใน Database หรือไม่
         $user = User::where('email', $validate['email'])->first();
 
         // ตรวจสอบเงื่อนไขการ Login
         if (!$user || !Hash::check($validate['password'], $user->password)) {
             $response = [
-                'message' => 'Email or Password incorrect'
+                'message' => 'Email or Password incorrect',
             ];
             return response($response);
         } else {
             // ลบ Token เก่าที่ค้างอยู่
-            // $user->tokens()->delete();
+            $user->tokens()->delete();
 
             // สร้าง Token ใหม่
             $token = $user->createToken('myDevice')->plainTextToken;
             $response = [
                 'user' => $user,
-                'token' => $token
+                'token' => $token,
             ];
             return response($response);
         }
     }
+    
+    public function logout(){
+        
+        auth()->user()->tokens()->delete();
+        
+        $respone = [
+            'message' => 'Logout Success'
+        ];
+        return $respone;
+    }
+
 }
