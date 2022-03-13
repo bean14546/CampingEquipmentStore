@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-
     public function register(Request $request){
         $validate = $request->validate([
             'firstName' => 'required|string|max:100',
@@ -28,10 +27,10 @@ class AuthController extends Controller
             'gender' => $validate['gender'],
         ]);
 
-        $token = $user->createToken('myDevice')->plainTextToken;
+        // $token = $user->createToken($request->userAgent())->plainTextToken;
         $respone = [
             'user' => $user,
-            'token' => $token,
+            'message' => 'Resgister Success'
         ];
 
         return response($respone);
@@ -51,29 +50,32 @@ class AuthController extends Controller
             $response = [
                 'message' => 'Email or Password incorrect',
             ];
-            return response($response);
+            return response($response,401);
         } else {
             // ลบ Token เก่าที่ค้างอยู่
             $user->tokens()->delete();
 
             // สร้าง Token ใหม่
-            $token = $user->createToken('myDevice')->plainTextToken;
+            // userAgent() คือ method ที่ใช้สำหรับดึง Browser ว่ายิง API มาจาก Browser ไหน
+            $token = $user->createToken($request->userAgent())->plainTextToken;
+            
             $response = [
                 'user' => $user,
                 'token' => $token,
+                'message' => 'Login Success'
             ];
-            return response($response);
+            return response($response,201);
         }
     }
     
-    public function logout(){
+    public function logout(Request $request){
         
-        auth()->user()->tokens()->delete();
+        $request->user()->currentAccessToken()->delete();
         
         $respone = [
             'message' => 'Logout Success'
         ];
-        return $respone;
+        return response($respone,200);
     }
 
 }

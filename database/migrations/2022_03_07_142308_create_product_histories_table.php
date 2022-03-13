@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductsTable extends Migration
+class CreateProductHistoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,16 @@ class CreateProductsTable extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('product_histories', function (Blueprint $table) {
             $table->id();
-            $table->text('image');
+            $table->string('image');
             $table->string('name');
-            $table->decimal('price',7,2); // 7 คือ เก็บได้ทั้งหมด 7 หลัก(รวมทศนิยม), 2 คือ ทศนิยม 2 ตำแหน่ง 99999.99
+            $table->decimal('price',7,2);
             $table->text('description')->nullable();
-            $table->integer('amount');
             $table->string('category');
+            $table->integer('quantity');
+            $table->decimal('total', 7, 2); // 7 คือ เก็บได้ทั้งหมด 7 หลัก(รวมทศนิยม), 2 คือ ทศนิยม 2 ตำแหน่ง 99999.99
+            $table->integer('user_id');
             $table->timestamps();
         });
     }
@@ -32,6 +34,6 @@ class CreateProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('product_histories');
     }
 }
