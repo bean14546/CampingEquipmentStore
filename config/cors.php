@@ -19,6 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
+    // อนุญาตให้ทุกเว็บไซต์เรียกใช้ api ได้ 
     'allowed_origins' => ['*'],
 
     'allowed_origins_patterns' => [],

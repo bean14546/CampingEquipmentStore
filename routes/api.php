@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
+Route::get('productReadForGuest', [ProductController::class, 'productReadForGuest']);
+
 // Middleware คือ ตัวกรอง request Sanctum คือ แพ็คเกจที่ช่วยในเรื่องของการ Authenticate
 Route::group(['middleware' => 'auth:sanctum'], function () {
     // Product
@@ -31,7 +33,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('productCount', [ProductController::class, 'productCount']);
     Route::get('productRead', [ProductController::class, 'productRead']);
     Route::get('productReadID/{id}', [ProductController::class, 'productReadID']);
-    Route::get('productReadCategory/{cetegory}', [ProductController::class, 'productReadCategory']);
+    Route::get('productReadCategory/{category}', [ProductController::class, 'productReadCategory']);
     Route::get('productSearch/{keyword}', [ProductController::class, 'productSearch']);
 
     // History Product

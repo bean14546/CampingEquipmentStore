@@ -43,6 +43,10 @@ class ProductController extends Controller
         return Product::find($id);
     }
 
+    public function productReadForGuest(){
+        return Product::limit(3)->get();
+    }
+
     public function productReadCategory($category)
     {
         return Product::where('category', 'like', '%' . $category . '%')->get();
@@ -79,4 +83,7 @@ class ProductController extends Controller
             ->orWhere('category', 'like', '%' . $keyword . '%')
             ->get();
     }
+
+
+
 }
